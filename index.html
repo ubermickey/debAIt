@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>debAIt</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" id="hljs-dark">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" id="hljs-light" disabled>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
@@ -314,9 +315,173 @@
       .msg-body { max-width: 100%; }
     }
     @media (min-width: 769px) { .sidebar-overlay { display: none !important; } }
+    /* ── Splash Screen ─────────────────────────────────── */
+    #splashScreen {
+      position: fixed; inset: 0; z-index: 9999;
+      background: #050508;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+      overflow: hidden;
+    }
+    #splashScreen.dismiss { opacity: 0; visibility: hidden; pointer-events: none; }
+
+    .splash-robot {
+      width: 1px; height: 1px;
+      transform: scale(6);
+      image-rendering: pixelated;
+      opacity: 0;
+      animation: robotAssemble 1.2s steps(1) 0.3s forwards;
+    }
+    @keyframes robotAssemble {
+      0% { opacity: 1; box-shadow:
+        /* antenna */
+        4px 0 0 #c9a96e, 5px 0 0 #c9a96e;
+      }
+      8% { opacity: 1; box-shadow:
+        4px 0 0 #c9a96e, 5px 0 0 #c9a96e,
+        /* head top */
+        3px 1px 0 #b8944f, 4px 1px 0 #c9a96e, 5px 1px 0 #c9a96e, 6px 1px 0 #b8944f;
+      }
+      16% { opacity: 1; box-shadow:
+        4px 0 0 #c9a96e, 5px 0 0 #c9a96e,
+        3px 1px 0 #b8944f, 4px 1px 0 #c9a96e, 5px 1px 0 #c9a96e, 6px 1px 0 #b8944f,
+        /* helmet */
+        2px 2px 0 #a07d3a, 3px 2px 0 #c9a96e, 4px 2px 0 #d4b87d, 5px 2px 0 #d4b87d, 6px 2px 0 #c9a96e, 7px 2px 0 #a07d3a;
+      }
+      24% { opacity: 1; box-shadow:
+        4px 0 0 #c9a96e, 5px 0 0 #c9a96e,
+        3px 1px 0 #b8944f, 4px 1px 0 #c9a96e, 5px 1px 0 #c9a96e, 6px 1px 0 #b8944f,
+        2px 2px 0 #a07d3a, 3px 2px 0 #c9a96e, 4px 2px 0 #d4b87d, 5px 2px 0 #d4b87d, 6px 2px 0 #c9a96e, 7px 2px 0 #a07d3a,
+        /* face with eyes */
+        1px 3px 0 #8a6b2e, 2px 3px 0 #c9a96e, 3px 3px 0 #fff, 4px 3px 0 #c9a96e, 5px 3px 0 #c9a96e, 6px 3px 0 #fff, 7px 3px 0 #c9a96e, 8px 3px 0 #8a6b2e;
+      }
+      40% { opacity: 1; box-shadow:
+        4px 0 0 #c9a96e, 5px 0 0 #c9a96e,
+        3px 1px 0 #b8944f, 4px 1px 0 #c9a96e, 5px 1px 0 #c9a96e, 6px 1px 0 #b8944f,
+        2px 2px 0 #a07d3a, 3px 2px 0 #c9a96e, 4px 2px 0 #d4b87d, 5px 2px 0 #d4b87d, 6px 2px 0 #c9a96e, 7px 2px 0 #a07d3a,
+        1px 3px 0 #8a6b2e, 2px 3px 0 #c9a96e, 3px 3px 0 #fff, 4px 3px 0 #c9a96e, 5px 3px 0 #c9a96e, 6px 3px 0 #fff, 7px 3px 0 #c9a96e, 8px 3px 0 #8a6b2e,
+        /* lower face */
+        1px 4px 0 #a07d3a, 2px 4px 0 #c9a96e, 3px 4px 0 #c9a96e, 4px 4px 0 #d4b87d, 5px 4px 0 #d4b87d, 6px 4px 0 #c9a96e, 7px 4px 0 #c9a96e, 8px 4px 0 #a07d3a;
+      }
+      55% { opacity: 1; box-shadow:
+        4px 0 0 #c9a96e, 5px 0 0 #c9a96e,
+        3px 1px 0 #b8944f, 4px 1px 0 #c9a96e, 5px 1px 0 #c9a96e, 6px 1px 0 #b8944f,
+        2px 2px 0 #a07d3a, 3px 2px 0 #c9a96e, 4px 2px 0 #d4b87d, 5px 2px 0 #d4b87d, 6px 2px 0 #c9a96e, 7px 2px 0 #a07d3a,
+        1px 3px 0 #8a6b2e, 2px 3px 0 #c9a96e, 3px 3px 0 #fff, 4px 3px 0 #c9a96e, 5px 3px 0 #c9a96e, 6px 3px 0 #fff, 7px 3px 0 #c9a96e, 8px 3px 0 #8a6b2e,
+        1px 4px 0 #a07d3a, 2px 4px 0 #c9a96e, 3px 4px 0 #c9a96e, 4px 4px 0 #d4b87d, 5px 4px 0 #d4b87d, 6px 4px 0 #c9a96e, 7px 4px 0 #c9a96e, 8px 4px 0 #a07d3a,
+        /* mouth */
+        2px 5px 0 #8a6b2e, 3px 5px 0 #b8944f, 4px 5px 0 #555, 5px 5px 0 #555, 6px 5px 0 #b8944f, 7px 5px 0 #8a6b2e;
+      }
+      70% { opacity: 1; box-shadow:
+        4px 0 0 #c9a96e, 5px 0 0 #c9a96e,
+        3px 1px 0 #b8944f, 4px 1px 0 #c9a96e, 5px 1px 0 #c9a96e, 6px 1px 0 #b8944f,
+        2px 2px 0 #a07d3a, 3px 2px 0 #c9a96e, 4px 2px 0 #d4b87d, 5px 2px 0 #d4b87d, 6px 2px 0 #c9a96e, 7px 2px 0 #a07d3a,
+        1px 3px 0 #8a6b2e, 2px 3px 0 #c9a96e, 3px 3px 0 #fff, 4px 3px 0 #c9a96e, 5px 3px 0 #c9a96e, 6px 3px 0 #fff, 7px 3px 0 #c9a96e, 8px 3px 0 #8a6b2e,
+        1px 4px 0 #a07d3a, 2px 4px 0 #c9a96e, 3px 4px 0 #c9a96e, 4px 4px 0 #d4b87d, 5px 4px 0 #d4b87d, 6px 4px 0 #c9a96e, 7px 4px 0 #c9a96e, 8px 4px 0 #a07d3a,
+        2px 5px 0 #8a6b2e, 3px 5px 0 #b8944f, 4px 5px 0 #555, 5px 5px 0 #555, 6px 5px 0 #b8944f, 7px 5px 0 #8a6b2e,
+        /* chin */
+        3px 6px 0 #a07d3a, 4px 6px 0 #b8944f, 5px 6px 0 #b8944f, 6px 6px 0 #a07d3a;
+      }
+      100% { opacity: 1; box-shadow:
+        4px 0 0 #c9a96e, 5px 0 0 #c9a96e,
+        3px 1px 0 #b8944f, 4px 1px 0 #c9a96e, 5px 1px 0 #c9a96e, 6px 1px 0 #b8944f,
+        2px 2px 0 #a07d3a, 3px 2px 0 #c9a96e, 4px 2px 0 #d4b87d, 5px 2px 0 #d4b87d, 6px 2px 0 #c9a96e, 7px 2px 0 #a07d3a,
+        1px 3px 0 #8a6b2e, 2px 3px 0 #c9a96e, 3px 3px 0 #fff, 4px 3px 0 #c9a96e, 5px 3px 0 #c9a96e, 6px 3px 0 #fff, 7px 3px 0 #c9a96e, 8px 3px 0 #8a6b2e,
+        1px 4px 0 #a07d3a, 2px 4px 0 #c9a96e, 3px 4px 0 #c9a96e, 4px 4px 0 #d4b87d, 5px 4px 0 #d4b87d, 6px 4px 0 #c9a96e, 7px 4px 0 #c9a96e, 8px 4px 0 #a07d3a,
+        2px 5px 0 #8a6b2e, 3px 5px 0 #b8944f, 4px 5px 0 #555, 5px 5px 0 #555, 6px 5px 0 #b8944f, 7px 5px 0 #8a6b2e,
+        3px 6px 0 #a07d3a, 4px 6px 0 #b8944f, 5px 6px 0 #b8944f, 6px 6px 0 #a07d3a,
+        /* shoulders */
+        0px 7px 0 #8a6b2e, 1px 7px 0 #a07d3a, 2px 7px 0 #b8944f, 7px 7px 0 #b8944f, 8px 7px 0 #a07d3a, 9px 7px 0 #8a6b2e,
+        /* arms */
+        0px 8px 0 #a07d3a, 1px 8px 0 #c9a96e, 8px 8px 0 #c9a96e, 9px 8px 0 #a07d3a;
+      }
+    }
+
+    /* Eye glow pulse after assembly */
+    .splash-robot.assembled {
+      animation: none;
+      box-shadow:
+        4px 0 0 #c9a96e, 5px 0 0 #c9a96e,
+        3px 1px 0 #b8944f, 4px 1px 0 #c9a96e, 5px 1px 0 #c9a96e, 6px 1px 0 #b8944f,
+        2px 2px 0 #a07d3a, 3px 2px 0 #c9a96e, 4px 2px 0 #d4b87d, 5px 2px 0 #d4b87d, 6px 2px 0 #c9a96e, 7px 2px 0 #a07d3a,
+        1px 3px 0 #8a6b2e, 2px 3px 0 #c9a96e, 3px 3px 0 #fff, 4px 3px 0 #c9a96e, 5px 3px 0 #c9a96e, 6px 3px 0 #fff, 7px 3px 0 #c9a96e, 8px 3px 0 #8a6b2e,
+        1px 4px 0 #a07d3a, 2px 4px 0 #c9a96e, 3px 4px 0 #c9a96e, 4px 4px 0 #d4b87d, 5px 4px 0 #d4b87d, 6px 4px 0 #c9a96e, 7px 4px 0 #c9a96e, 8px 4px 0 #a07d3a,
+        2px 5px 0 #8a6b2e, 3px 5px 0 #b8944f, 4px 5px 0 #555, 5px 5px 0 #555, 6px 5px 0 #b8944f, 7px 5px 0 #8a6b2e,
+        3px 6px 0 #a07d3a, 4px 6px 0 #b8944f, 5px 6px 0 #b8944f, 6px 6px 0 #a07d3a,
+        0px 7px 0 #8a6b2e, 1px 7px 0 #a07d3a, 2px 7px 0 #b8944f, 7px 7px 0 #b8944f, 8px 7px 0 #a07d3a, 9px 7px 0 #8a6b2e,
+        0px 8px 0 #a07d3a, 1px 8px 0 #c9a96e, 8px 8px 0 #c9a96e, 9px 8px 0 #a07d3a;
+    }
+
+    .splash-eye-glow {
+      position: absolute;
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #ffe082;
+      box-shadow: 0 0 8px 4px rgba(255,224,130,0.6), 0 0 20px 8px rgba(201,169,110,0.3);
+      animation: eyePulse 1s ease-in-out infinite alternate;
+      opacity: 0;
+    }
+    .splash-eye-glow.left { left: calc(50% - 24px); top: calc(50% - 22px); }
+    .splash-eye-glow.right { left: calc(50% + 12px); top: calc(50% - 22px); }
+    .splash-eye-glow.on { opacity: 1; transition: opacity 0.3s; }
+    @keyframes eyePulse { 0% { box-shadow: 0 0 8px 4px rgba(255,224,130,0.6), 0 0 20px 8px rgba(201,169,110,0.3); } 100% { box-shadow: 0 0 12px 6px rgba(255,224,130,0.8), 0 0 30px 12px rgba(201,169,110,0.5); } }
+
+    .splash-title {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 28px; color: #c9a96e; margin-top: 40px;
+      letter-spacing: 4px;
+      opacity: 0; transform: translateY(10px);
+      image-rendering: pixelated;
+    }
+    .splash-title.show { opacity: 1; transform: translateY(0); transition: opacity 0.5s ease, transform 0.5s ease; }
+    .splash-title .ai { color: #ffe082; text-shadow: 0 0 10px rgba(255,224,130,0.5); }
+
+    .splash-subtitle {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px; color: #6e6e73; margin-top: 12px;
+      letter-spacing: 2px;
+      opacity: 0;
+    }
+    .splash-subtitle.show { opacity: 1; transition: opacity 0.5s ease 0.2s; }
+
+    .splash-sparkle {
+      position: absolute; width: 4px; height: 4px;
+      background: #ffe082; image-rendering: pixelated;
+      animation: sparkleFloat 1.5s ease-out forwards;
+      box-shadow: 0 0 4px 1px rgba(255,224,130,0.4);
+    }
+    @keyframes sparkleFloat {
+      0% { opacity: 1; transform: translate(0, 0) scale(1); }
+      50% { opacity: 1; }
+      100% { opacity: 0; transform: translate(var(--sx), var(--sy)) scale(0); }
+    }
+
+    .splash-scanline {
+      position: absolute; inset: 0; pointer-events: none;
+      background: repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px);
+    }
+
+    /* Pixel grid background effect */
+    .splash-grid {
+      position: absolute; inset: 0; pointer-events: none; opacity: 0.03;
+      background-image:
+        linear-gradient(rgba(201,169,110,0.5) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201,169,110,0.5) 1px, transparent 1px);
+      background-size: 6px 6px;
+    }
   </style>
 </head>
 <body>
+  <!-- Splash Screen -->
+  <div id="splashScreen">
+    <div class="splash-grid"></div>
+    <div class="splash-scanline"></div>
+    <div class="splash-eye-glow left" id="eyeL"></div>
+    <div class="splash-eye-glow right" id="eyeR"></div>
+    <div class="splash-robot" id="splashRobot"></div>
+    <div class="splash-title" id="splashTitle">deb<span class="ai">AI</span>t</div>
+    <div class="splash-subtitle" id="splashSub">MULTI-AI DEBATE ARENA</div>
+  </div>
+
   <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
   <aside class="sidebar" id="sidebar">
@@ -967,7 +1132,64 @@
     if (activeConvId && conversations[activeConvId]?.provider) setProvider(conversations[activeConvId].provider, true);
     renderSidebar();
     if (activeConvId && conversations[activeConvId]) { renderMessages(); updateHeader(); updateTokenCounter(); } else { renderMessages(); }
-    updateSendButton(); $promptInput.focus();
+    updateSendButton();
+
+    // ── Splash Screen Animation ──────────────────────────
+    (function runSplash() {
+      const splash = document.getElementById('splashScreen');
+      if (!splash) { $promptInput.focus(); return; }
+
+      const robot = document.getElementById('splashRobot');
+      const title = document.getElementById('splashTitle');
+      const sub = document.getElementById('splashSub');
+      const eyeL = document.getElementById('eyeL');
+      const eyeR = document.getElementById('eyeR');
+
+      function spawnSparkle() {
+        const s = document.createElement('div');
+        s.className = 'splash-sparkle';
+        const cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+        s.style.left = (cx + (Math.random() - 0.5) * 120) + 'px';
+        s.style.top = (cy + (Math.random() - 0.5) * 100 - 20) + 'px';
+        s.style.setProperty('--sx', (Math.random() - 0.5) * 80 + 'px');
+        s.style.setProperty('--sy', (Math.random() - 0.5) * 80 + 'px');
+        s.style.width = s.style.height = (2 + Math.random() * 4) + 'px';
+        const hue = Math.random() > 0.5 ? '#ffe082' : '#c9a96e';
+        s.style.background = hue;
+        splash.appendChild(s);
+        setTimeout(() => s.remove(), 1500);
+      }
+
+      // Assembly complete → glow eyes
+      setTimeout(() => {
+        robot.classList.add('assembled');
+        eyeL.classList.add('on');
+        eyeR.classList.add('on');
+        // Burst of sparkles
+        for (let i = 0; i < 20; i++) setTimeout(spawnSparkle, i * 60);
+      }, 1600);
+
+      // Show title
+      setTimeout(() => title.classList.add('show'), 2000);
+      setTimeout(() => sub.classList.add('show'), 2300);
+
+      // Continuous sparkles
+      let sparkleInterval = setInterval(spawnSparkle, 150);
+
+      // Dismiss splash
+      setTimeout(() => {
+        clearInterval(sparkleInterval);
+        splash.classList.add('dismiss');
+        setTimeout(() => { splash.remove(); $promptInput.focus(); }, 600);
+      }, 3800);
+
+      // Click to skip
+      splash.addEventListener('click', () => {
+        clearInterval(sparkleInterval);
+        splash.classList.add('dismiss');
+        setTimeout(() => { splash.remove(); $promptInput.focus(); }, 300);
+      });
+    })();
   </script>
 </body>
 </html>
