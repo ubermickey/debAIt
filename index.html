@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AntroRespond</title>
+  <title>debAIt</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" id="hljs-dark">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" id="hljs-light" disabled>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
@@ -322,8 +322,11 @@
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-brand">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2L14.09 8.26L20 9.27L15.55 13.97L16.91 20L12 16.9L7.09 20L8.45 13.97L4 9.27L9.91 8.26L12 2Z" fill="var(--gold)" opacity="0.8"/></svg>
-        <span>Antro<span class="gold">Respond</span></span>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M4 4h6c1.1 0 2 .9 2 2v5c0 1.1-.9 2-2 2H6l-2 2V6c0-1.1.9-2 2-2z" fill="var(--gold)" opacity="0.7"/>
+          <path d="M14 9h6c1.1 0 2 .9 2 2v7l-2-2h-4c-1.1 0-2-.9-2-2v-3c0-1.1.9-2 2-2z" fill="var(--gold)" opacity="0.45"/>
+        </svg>
+        <span>deb<span class="gold">AI</span>t</span>
       </div>
       <button class="btn-new-chat" id="btnNewChat" title="New Chat (Cmd+N)">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -867,8 +870,20 @@
 
     // ── Send / Stop ───────────────────────────────────────
     async function sendMessage(text) {
-      if (isGenerating) return; if (!text || !text.trim()) return; text = text.trim();
-      if (currentProvider === 'discussion' || (activeConvId && conversations[activeConvId]?.provider === 'discussion')) return runDiscussionRound(text);
+      if (!text || !text.trim()) return; text = text.trim();
+      const isDiscussion = currentProvider === 'discussion' || (activeConvId && conversations[activeConvId]?.provider === 'discussion');
+      // In discussion mode, sending a message interrupts the current round
+      if (isGenerating && isDiscussion) {
+        autoDiscussionEnabled = false;
+        if (abortController) abortController.abort();
+        // Wait for current generation to settle
+        await new Promise(r => setTimeout(r, 300));
+        isGenerating = false; discussionRoundInProgress = false; abortController = null;
+        hideTypingIndicator();
+        return runDiscussionRound(text);
+      }
+      if (isGenerating) return;
+      if (isDiscussion) return runDiscussionRound(text);
       if (!activeConvId) createNewConversation();
       const conv = conversations[activeConvId];
       conv.messages.push({ role: 'user', content: text });
@@ -899,8 +914,23 @@
       else { $btnSend.className = 'btn-send' + (hasText ? ' active' : ''); $btnSend.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>`; $btnSend.title = 'Send message'; }
     }
     $promptInput.addEventListener('input', () => { autoResize(); updateSendButton(); });
-    $promptInput.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (isGenerating) return; const t = $promptInput.value.trim(); if (!t) return; $promptInput.value = ''; autoResize(); updateSendButton(); sendMessage(t); } });
-    $btnSend.addEventListener('click', () => { if (isGenerating) { stopGeneration(); return; } const t = $promptInput.value.trim(); if (!t) return; $promptInput.value = ''; autoResize(); updateSendButton(); sendMessage(t); });
+    $promptInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        const t = $promptInput.value.trim(); if (!t) return;
+        const isDisc = currentProvider === 'discussion' || (activeConvId && conversations[activeConvId]?.provider === 'discussion');
+        if (isGenerating && !isDisc) return; // block for non-discussion, allow interrupt for discussion
+        $promptInput.value = ''; autoResize(); updateSendButton(); sendMessage(t);
+      }
+    });
+    $btnSend.addEventListener('click', () => {
+      const t = $promptInput.value.trim();
+      const isDisc = currentProvider === 'discussion' || (activeConvId && conversations[activeConvId]?.provider === 'discussion');
+      if (isGenerating && !isDisc && !t) { stopGeneration(); return; }
+      if (isGenerating && !isDisc) { stopGeneration(); return; }
+      if (!t) return;
+      $promptInput.value = ''; autoResize(); updateSendButton(); sendMessage(t);
+    });
 
     document.getElementById('btnNewChat').addEventListener('click', () => { createNewConversation(); if (window.innerWidth <= 768) { sidebarOpen = false; $sidebar.classList.remove('open'); $sidebar.classList.add('collapsed'); $sidebarOverlay.classList.remove('visible'); } });
     $searchInput.addEventListener('input', () => { renderSidebar($searchInput.value); });
@@ -910,7 +940,7 @@
       if (!activeConvId || !conversations[activeConvId]) { showToast('No conversation to export'); return; }
       const conv = conversations[activeConvId]; const isDisc = conv.provider === 'discussion';
       let md = `# ${conv.title}\n\n`; if (isDisc) md += `*Mode: Discussion*\n\n`;
-      md += `*Exported from AntroRespond on ${new Date().toLocaleDateString()}*\n\n---\n\n`;
+      md += `*Exported from debAIt on ${new Date().toLocaleDateString()}*\n\n---\n\n`;
       const defaultLabel = providerDisplayName(conv.provider || 'claude');
       conv.messages.forEach(msg => {
         if (msg.role === 'user') md += `## You\n\n${msg.content}\n\n`;

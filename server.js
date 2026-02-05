@@ -9,7 +9,7 @@ const CLAUDE = "/opt/homebrew/bin/claude";
 const CODEX = "/opt/homebrew/bin/codex";
 const GEMINI = "/opt/homebrew/bin/gemini";
 const LOG_DIR = path.join(__dirname, "logs");
-const LOG_FILE = path.join(LOG_DIR, "antro-respond.log");
+const LOG_FILE = path.join(LOG_DIR, "debait.log");
 const SESSIONS_FILE = path.join(LOG_DIR, "sessions.json");
 const logQueue = [];
 let isWritingLog = false;
@@ -642,7 +642,7 @@ const server = http.createServer(async (req, res) => {
 
 server.listen(PORT, () => {
   log("info", "Server started", { port: PORT });
-  console.log(`AntroRespond running on http://localhost:${PORT}`);
+  console.log(`debAIt running on http://localhost:${PORT}`);
   console.log(`Logs: ${LOG_FILE}`);
 
   // Start log writer
