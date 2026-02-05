@@ -1,0 +1,9 @@
+{
+  "name": "debait",
+  "version": "1.0.0",
+  "description": "AI debate platform — pit Claude, Codex, and Gemini against each other",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  }
+}

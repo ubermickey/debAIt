@@ -1,0 +1,23 @@
+#!/bin/bash
+# DebAIt — AI Debate Platform
+APP_DIR="$(cd "$(dirname "$0")/../../.." && pwd)"
+
+# Kill any existing instance
+lsof -ti :3456 | xargs kill 2>/dev/null
+sleep 1
+
+# Start server
+/opt/homebrew/bin/node "$APP_DIR/server.js" &
+SERVER_PID=$!
+
+# Wait for server
+for i in {1..10}; do
+  if curl -s http://localhost:3456/ > /dev/null 2>&1; then
+    open http://localhost:3456
+    break
+  fi
+  sleep 1
+done
+
+# Keep running until server exits
+wait $SERVER_PID
