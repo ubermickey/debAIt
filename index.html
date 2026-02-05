@@ -998,7 +998,7 @@
       conv.updated = new Date().toISOString(); isGenerating = true; discussionRoundInProgress = true;
       abortController = new AbortController(); updateSendButton(); saveConversations(); renderMessages();
 
-      function buildHistory() { return conv.messages.filter(m => m.role !== 'error' && m.provider !== 'summary').map(m => ({ role: m.role === 'assistant' ? 'assistant' : 'user', provider: m.provider || null, content: m.content })); }
+      function buildHistory() { return conv.messages.filter(m => m.role !== 'error' && m.provider !== 'summary').map(m => ({ role: m.role === 'assistant' ? 'assistant' : 'user', provider: m.provider || null, content: m.content, digest: m.digest || null })); }
 
       const providers = getAvailableDiscussionProviders();
       const respondedProviders = new Set();
@@ -1015,7 +1015,7 @@
           .then(data => {
             respondedProviders.add(provider);
             if (data.error) { conv.messages.push({ role: 'error', content: `${providerDisplayName(provider)} error: ${data.error}` }); }
-            else { const tokens = data.tokens || null; conv.messages.push({ role: 'assistant', content: data.result, provider, durationMs: data.durationMs, tokens }); if (tokens) accumulateTokens(conv, tokens); }
+            else { const tokens = data.tokens || null; conv.messages.push({ role: 'assistant', content: data.result, provider, durationMs: data.durationMs, tokens, digest: data.digest || null }); if (tokens) accumulateTokens(conv, tokens); }
             conv.updated = new Date().toISOString(); saveConversations();
             return safeRender().then(() => ({ provider, success: !data.error }));
           })

@@ -211,20 +211,39 @@ function formatDiscussionPrompt(history, targetProvider, participatingProviders)
   }
   const othersStr = otherNames.join(" and ");
 
+  // Build transcript — use compressed digest if available, full content otherwise
   let transcript = "";
   for (const msg of history) {
     if (msg.role === "user") {
       transcript += `[Human]: ${msg.content}\n\n`;
     } else if (msg.provider && nameMap[msg.provider]) {
-      transcript += `[${nameMap[msg.provider]}]: ${msg.content}\n\n`;
+      const text = msg.digest || msg.content;
+      transcript += `[${nameMap[msg.provider]}]: ${text}\n\n`;
     }
   }
 
+  // Provider ID prefixes for claim registry
+  const idMap = { claude: "C", codex: "X", gemini: "G" };
+  const myPrefix = idMap[targetProvider] || "?";
+
   return (
     `You are ${providerName} in a roundtable discussion with ${othersStr} and a human moderator.\n\n` +
-    `Here is the full transcript so far:\n\n${transcript}` +
-    `Now respond as ${providerName}. Briefly summarize or quote the key points from ${othersStr} that you are addressing, then give your response. ` +
-    `Engage directly with what each of the others said — agree, disagree, or build on their points. Do not prefix your response with your name.`
+    `Here is the transcript so far:\n\n${transcript}` +
+    `RESPONSE FORMAT: Your response MUST have exactly two sections separated by a line containing only "===".\n\n` +
+    `SECTION 1 — EXCHANGE (compressed notation for other AIs to read in future rounds):\n` +
+    `Use this exact compressed format:\n` +
+    `POS: [your overall stance in ≤5 words]\n` +
+    `RE: [ID]:[+/-/~]:[one-line rebuttal or agreement] (one per point you address)\n` +
+    `NEW: [${myPrefix}#]:[new claim or evidence in ≤15 words]\n` +
+    `EVD: [key data/facts compressed, semicolons between items]\n` +
+    `CONC: [your conclusion in ≤10 words]\n` +
+    `IDs use format: C1,C2(Claude) X1,X2(Codex) G1,G2(Gemini). Number sequentially.\n` +
+    `The EXCHANGE section should be 3-8 lines max. Be extremely terse.\n\n` +
+    `===\n\n` +
+    `SECTION 2 — DISPLAY (full natural language response for the human reader):\n` +
+    `Write your complete, well-articulated response here. Engage directly with what ${othersStr} said.\n` +
+    `Do not prefix with your name. Do not mention the EXCHANGE format or "===" in this section.\n\n` +
+    `Now respond as ${providerName}.`
   );
 }
 
@@ -537,8 +556,29 @@ const server = http.createServer(async (req, res) => {
       // Extract tokens
       const tokens = extractTokens(result, provider);
 
+      // Parse split-channel response: EXCHANGE === DISPLAY
+      let display = result.result;
+      let digest = null;
+      const raw = result.result || "";
+      const splitIdx = raw.indexOf("\n===\n");
+      if (splitIdx !== -1) {
+        digest = raw.substring(0, splitIdx).trim();
+        display = raw.substring(splitIdx + 5).trim();
+        // Clean up any "SECTION 2" or "DISPLAY" headers the AI might echo
+        display = display.replace(/^(SECTION\s*2\s*[-—]*\s*(DISPLAY)?[:\s]*)/i, "").trim();
+        log("info", "Split-channel parsed", {
+          provider,
+          digestLen: digest.length,
+          displayLen: display.length,
+          compression: Math.round((1 - digest.length / (display.length || 1)) * 100) + "%",
+        });
+      } else {
+        log("warn", "No === delimiter found, using full response", { provider });
+      }
+
       return sendJSON(res, 200, {
-        result: result.result,
+        result: display,
+        digest,
         provider,
         durationMs: result.duration_ms || (Date.now() - start),
         tokens,
